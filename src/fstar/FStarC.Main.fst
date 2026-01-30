@@ -396,53 +396,52 @@ let go_normal () =
 
       (* Normal, batch mode compiler *)
       else begin
-        if Nil? filenames then
-          Errors.raise_error0 Errors.Error_MissingFileName "No file provided";
+        let fn = match filenames with
+          | [fn] -> fn
+          | [] -> Errors.raise_error0 Errors.Error_MissingFileName "No file provided"
+          | _ -> Errors.raise_error0 Errors.Error_TooManyFiles 
+                   "Only one file can be provided on the command line"
+        in
+        let m = FStarC.Parser.Dep.lowercase_module_name fn in
+        Options.add_verify_module m;
         let filenames, dep_graph, fly_deps = 
           if FStarC.Parser.Dep.fly_deps_enabled()
           then (
-            //we first check if fn is already has a valid .checked file
+            //we first check if fn already has a valid .checked file
             //if so, we disable fly_deps and proceed; this will cause the
             //batch mode tc to load all the checked files. It is important
             //for --codegen mode, where typically, all the checked files
-            //already exists, and we do not want to check them again
+            //already exist, and we do not want to check them again
             //This also means that if you do `fstar.exe A.fst` and A.fst.checked
             //is valid, then the compiler does nothing. This is something we could
             //revisit and change.
-            match filenames with
-            | [fn] ->
-              let m = FStarC.Parser.Dep.lowercase_module_name fn in
-              Options.add_verify_module m;
-              let default_flydeps () =
-                //by default, just initialize an empty dep graph
-                //return the file, its interface if any, and go
-                let deps = FStarC.Parser.Dep.empty_deps [fn] in
-                let filenames =
-                  if FStarC.Parser.Dep.is_implementation fn
-                  then (
-                    match FStarC.Parser.Dep.interface_of deps m with
-                    | None -> [fn]
-                    | Some iface -> [iface; fn]
-                  )
-                  else [fn]
-                in
-                filenames, deps, true
+            let default_flydeps () =
+              //by default, just initialize an empty dep graph
+              //return the file, its interface if any, and go
+              let deps = FStarC.Parser.Dep.empty_deps [fn] in
+              let filenames =
+                if FStarC.Parser.Dep.is_implementation fn
+                then (
+                  match FStarC.Parser.Dep.interface_of deps m with
+                  | None -> [fn]
+                  | Some iface -> [iface; fn]
+                )
+                else [fn]
               in
-              if Options.force() then default_flydeps() else
-              begin match CheckedFiles.scan_deps_and_check_cache_validity fn with
-              | Some (files, deps) ->
-                files, deps, false //we have all the checked files; no need to fly deps
-              | None -> 
-                default_flydeps()
-              end
-            | _ ->
-              Errors.raise_error0 Errors.Error_TooManyFiles
-                "When using --ext fly_deps, only one file can be provided."
+              filenames, deps, true
+            in
+            if Options.force() then default_flydeps() else
+            begin match CheckedFiles.scan_deps_and_check_cache_validity fn with
+            | Some (files, deps) ->
+              files, deps, false //we have all the checked files; no need to fly deps
+            | None -> 
+              default_flydeps()
+            end
           )
           else (
             let files, deps = 
               Dependencies.find_deps_if_needed
-                filenames 
+                [fn] 
                 CheckedFiles.load_parsing_data_from_cache
             in
             files, deps, false
