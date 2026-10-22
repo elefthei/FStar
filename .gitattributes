@@ -35,3 +35,5 @@ karamel_ref eol=lf
 
 # Batch files
 *.bat eol=crlf
+
+.github/workflows/*.lock.yml linguist-generated=true
