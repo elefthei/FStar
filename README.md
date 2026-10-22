@@ -1,5 +1,13 @@
-F*: A Proof-oriented Programming Language
-=========================================
+FStar - development version
+===========================
+
+> [!WARNING]
+> This repository is an **experimentation version** of F\* used for trying out
+> changes to the F\* core. It is **not** intended for real verification work and
+> may be unstable or unsound. For the official F\* release, please use
+> [FStarLang/FStar](https://github.com/FStarLang/FStar).
+
+F\* is a proof-oriented programming language.
 
 ### F\* website
 
