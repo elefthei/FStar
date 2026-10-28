@@ -1165,7 +1165,8 @@ let extract_record (e:env) (new_globs: ref (list scope_mod)) : sigelt -> ML unit
       | { sigel = Sig_inductive_typ {lid=typename;
                                      us=univs;
                                      params=parms;
-                                     ds=[dc]}; sigquals = typename_quals } ->
+                                     ds=[dc]}; sigquals = typename_quals;
+                                     sigattrs = typename_attrs } ->
         begin match Option.must (find_dc dc) with
             | { sigel = Sig_datacon {lid=constrname; t; num_ty_params=n} } ->
                 let all_formals, _ = U.arrow_formals t in
@@ -1178,7 +1179,8 @@ let extract_record (e:env) (new_globs: ref (list scope_mod)) : sigelt -> ML unit
                               parms=parms;
                               fields=fields;
                               is_private = List.contains Private typename_quals;
-                              is_record=is_rec} in
+                              is_record=is_rec;
+                              is_codata=is_rec && has_attribute typename_attrs Const.coinductive_attr} in
                 (* the record is added to the current list of
                 top-level definitions, to allow shadowing field names
                 that were reachable through previous "open"s. *)

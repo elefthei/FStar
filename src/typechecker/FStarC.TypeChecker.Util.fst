@@ -2969,6 +2969,12 @@ let try_lookup_record_type env (typename:lident)
            then let parms, fields = List.splitAt nparms formals in // Remove params. Whatever remains are fields.
                 let fields = List.map (fun b -> b.binder_bv.ppname, S.is_bqual_implicit_or_meta b.binder_qual, b.binder_bv.sort) fields in
                 let is_rec = Env.is_record env typename in
+                let is_codata =
+                  is_rec &&
+                  (match Env.lookup_attrs_of_lid env typename with
+                   | Some attrs -> U.has_attribute attrs C.coinductive_attr
+                   | None -> false)
+                in
                 let r : DsEnv.record_or_dc =
                   {
                     typename = typename;
@@ -2976,7 +2982,8 @@ let try_lookup_record_type env (typename:lident)
                     parms;
                     fields = fields;
                     is_private = false;
-                    is_record = is_rec
+                    is_record = is_rec;
+                    is_codata
                   }
                 in
                 Some r
