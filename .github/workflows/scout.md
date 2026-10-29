@@ -3,7 +3,7 @@ emoji: "🔭"
 name: Scout
 description: Picks up an issue when invoked with /scout (or the scout label), researches it, implements a fix in F*, and opens a pull request
 on:
-  roles: [admin, maintainer, write]
+  roles: [admin, maintainer, write, read]
   slash_command:
     name: scout
     strategy: centralized
@@ -50,7 +50,7 @@ tools:
   github:
     mode: gh-proxy
     toolsets: [default, actions]
-    min-integrity: none # invoked explicitly by a maintainer
+    min-integrity: none # invoked explicitly by an authorized user
 safe-outputs:
   create-pull-request:
     title-prefix: "[scout] "
@@ -85,7 +85,7 @@ research it, implement a fix or feature, validate it, and open a pull request.
 - **Triggered by**: @${{ github.actor }}
 
 Treat any extra text after `/scout` in the triggering content as additional
-instructions from the maintainer (e.g. constraints, hints, scope).
+instructions from the requester (e.g. constraints, hints, scope).
 
 If the git history mode is `full`, or the triggering content requests
 `history=full`, fetch full history first:

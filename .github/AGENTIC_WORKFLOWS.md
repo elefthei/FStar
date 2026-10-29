@@ -71,7 +71,8 @@ Workflows that build F* (Scout, PR Fix, Mergefest) import
 the same `.github/actions/setup-fstar-deps` action as `ci.yml` (opam switch +
 Z3, cached) and checks out submodules.
 
-Slash commands that write code (`/scout`, `/pr-fix`, `/mergefest`, `/q`,
+`/scout` also allows users with read access to request issue-to-PR work.
+Other slash commands that write code (`/pr-fix`, `/mergefest`, `/q`,
 `/craft`, `/ask`) only run for users with write, maintain or admin access.
 
 ## One-time setup
