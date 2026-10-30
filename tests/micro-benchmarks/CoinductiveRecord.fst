@@ -1,5 +1,7 @@
 module CoinductiveRecord
 
+open FStar.Tactics.V2
+
 (* The [@@coinductive] attribute is currently a purely syntactic marker
    on record types; records decorated with it behave like ordinary
    records. *)
@@ -26,7 +28,6 @@ let test_pat (s:stream_cell int) : int =
 (* Field-name disambiguation by type also works. *)
 let typed_access (s:stream_cell bool) = s.hd
 
-[@@FStar.Attributes.coinductive]
 noeq
 type with_fun = {
   f : int -> int;
@@ -35,3 +36,14 @@ type with_fun = {
 
 let wf : with_fun = { f = (fun x -> x + 1); n = 0 }
 let _ = assert (wf.f 1 == 2)
+
+let reflect_codata () : Tac unit =
+  match lookup_typ (cur_env ()) ["CoinductiveRecord"; "stream_cell"] with
+  | Some se ->
+    begin match sigelt_quals se with
+    | [RecordType (_, _, true)] -> ()
+    | _ -> fail "RecordType did not expose the coinductive flag"
+    end
+  | None -> fail "stream_cell was not found"
+
+let _ = assert True by (reflect_codata ())
