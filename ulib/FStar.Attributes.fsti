@@ -226,6 +226,12 @@ val handle_smt_goals : unit
     see https://github.com/FStarLang/FStar/issues/1844 *)
 val erasable : unit
 
+(** This attribute can be added to a record type definition to mark
+    it as coinductive (codata). Currently this is only a syntactic
+    marker: it sets the [is_codata] flag on the record, but does not
+    otherwise change how the type is checked or extracted. *)
+val coinductive : unit
+
 (** [commute_nested_matches]
     This attribute can be used to decorate an inductive type [t]
 

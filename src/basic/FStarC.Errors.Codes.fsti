@@ -424,6 +424,7 @@ type error_code =
   | Error_CustardRuleArityExceeded
   | Error_CustardBadFunctor
   | Error_CustardBadIfDef
+  | Fatal_InvalidCoinductiveAttribute
 
 type error_setting = error_code & error_flag & int
 

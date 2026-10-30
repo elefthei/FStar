@@ -229,7 +229,7 @@ type qualifier =
   | Reflectable of name
   | Discriminator of name
   | Projector of name & ident
-  | RecordType of (list ident & list ident)
+  | RecordType of (list ident & list ident & bool) (* The boolean marks [@@coinductive]. *)
   | RecordConstructor of (list ident & list ident)
   | Action of name
   | ExceptionConstructor

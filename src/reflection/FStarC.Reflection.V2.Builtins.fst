@@ -488,7 +488,7 @@ let rd_to_syntax_qual : RD.qualifier -> ML qualifier = function
   | RD.Reflectable l -> Reflectable (Ident.lid_of_path l Range.dummyRange)
   | RD.Discriminator l -> Discriminator (Ident.lid_of_path l Range.dummyRange)
   | RD.Projector (l, i) -> Projector (Ident.lid_of_path l Range.dummyRange, i)
-  | RD.RecordType (l1, l2) -> RecordType (l1, l2)
+  | RD.RecordType (l1, l2, _) -> RecordType (l1, l2)
   | RD.RecordConstructor (l1, l2) -> RecordConstructor (l1, l2)
   | RD.Action l -> Action (Ident.lid_of_path l Range.dummyRange)
   | RD.ExceptionConstructor -> ExceptionConstructor
@@ -513,7 +513,7 @@ let syntax_to_rd_qual : S.qualifier -> ML RD.qualifier = function
   | Reflectable l -> RD.Reflectable (Ident.path_of_lid l)
   | Discriminator l -> RD.Discriminator (Ident.path_of_lid l)
   | Projector (l, i) -> RD.Projector (Ident.path_of_lid l, i)
-  | RecordType (l1, l2) -> RD.RecordType (l1, l2)
+  | RecordType (l1, l2) -> RD.RecordType (l1, l2, false)
   | RecordConstructor (l1, l2) -> RD.RecordConstructor (l1, l2)
   | Action l -> RD.Action (Ident.path_of_lid l)
   | ExceptionConstructor -> RD.ExceptionConstructor
@@ -528,7 +528,10 @@ let pack_ident (i: string & Range.t) : ident =
   Ident.mk_ident i
 
 let sigelt_quals (se : sigelt) : ML (list RD.qualifier) =
-    se.sigquals |> List.map syntax_to_rd_qual
+    let is_codata = U.has_attribute se.sigattrs PC.coinductive_attr in
+    se.sigquals |> List.map (function
+      | RecordType (l1, l2) -> RD.RecordType (l1, l2, is_codata)
+      | q -> syntax_to_rd_qual q)
 
 let set_sigelt_quals (quals : list RD.qualifier) (se : sigelt) : ML sigelt =
     { se with sigquals = List.map rd_to_syntax_qual quals }

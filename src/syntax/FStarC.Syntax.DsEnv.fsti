@@ -34,7 +34,8 @@ type record_or_dc = {
   parms: binders;
   fields: list (ident & bool & typ); (* bool: is it implicit or meta? *)
   is_private: bool;
-  is_record:bool
+  is_record:bool;
+  is_codata:bool (* is it a record marked [@@coinductive]? *)
 }
 
 val env : Type0
