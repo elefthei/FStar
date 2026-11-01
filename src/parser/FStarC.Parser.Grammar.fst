@@ -2137,7 +2137,7 @@ let typeDecl (ps:pstate) : ML tycon =
       match record with
       | Some (attrs, fs) ->
         check_id lid;
-        TyconRecord (lid, tparams, kopt, attrs, fs)
+        TyconRecord (lid, tparams, kopt, attrs, fs, false)
       | None ->
         if FStar.List.Tot.mem k start_of_next_decl_kinds || k = AND then begin
           check_id lid;

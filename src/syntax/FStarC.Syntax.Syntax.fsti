@@ -496,8 +496,8 @@ type qualifier =
   | Visible_default                        //a definition that may be unfolded by the normalizer, but only if necessary (default)
   | Discriminator of lident                //discriminator for a datacon l
   | Projector of lident & ident            //projector for datacon l's argument x
-  | RecordType of (list ident & list ident)          //record type whose namespace is fst and unmangled field names are snd
-  | RecordConstructor of (list ident & list ident)   //record constructor whose namespace is fst and unmangled field names are snd
+  | RecordType of (list ident & list ident & bool)          //record type: namespace, unmangled field names, and whether it is codata (is_codata)
+  | RecordConstructor of (list ident & list ident & bool)   //record constructor: namespace, unmangled field names, and whether it is codata (is_codata)
   | Action of lident                       //action of some effect
   | ExceptionConstructor                   //a constructor of Prims.exn
   | HasMaskedEffect                        //a let binding that may have a top-level effect

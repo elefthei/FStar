@@ -181,7 +181,7 @@ type constructor_payload
 type tycon =
   | TyconAbstract of ident & list binder & option knd
   | TyconAbbrev   of ident & list binder & option knd & term
-  | TyconRecord   of ident & list binder & option knd & attributes_ & tycon_record
+  | TyconRecord   of ident & list binder & option knd & attributes_ & tycon_record & bool (* is_codata *)
   | TyconVariant  of ident & list binder & option knd & list (ident & option constructor_payload & attributes_)
 
 type qualifier =

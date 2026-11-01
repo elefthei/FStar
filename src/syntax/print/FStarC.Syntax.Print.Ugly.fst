@@ -122,8 +122,8 @@ let qual_to_string (x:qualifier) : ML string = match x with
   | TotalEffect           -> "total"
   | Discriminator l       -> Format.fmt1 "(Discriminator %s)" (lid_to_string l)
   | Projector (l, x)      -> Format.fmt2 "(Projector %s %s)" (lid_to_string l) (string_of_id x)
-  | RecordType (ns, fns)  -> Format.fmt2 "(RecordType %s %s)" (text_of_path (path_of_ns ns)) (fns |> List.map string_of_id |> String.concat ", ")
-  | RecordConstructor (ns, fns) -> Format.fmt2 "(RecordConstructor %s %s)" (text_of_path (path_of_ns ns))  (fns |> List.map string_of_id |> String.concat ", ")
+  | RecordType (ns, fns, is_codata)  -> Format.fmt3 "(RecordType %s %s%s)" (text_of_path (path_of_ns ns)) (fns |> List.map string_of_id |> String.concat ", ") (if is_codata then " codata" else "")
+  | RecordConstructor (ns, fns, is_codata) -> Format.fmt3 "(RecordConstructor %s %s%s)" (text_of_path (path_of_ns ns))  (fns |> List.map string_of_id |> String.concat ", ") (if is_codata then " codata" else "")
   | Action eff_lid        -> Format.fmt1 "(Action %s)" (lid_to_string eff_lid)
   | ExceptionConstructor  -> "ExceptionConstructor"
   | HasMaskedEffect       -> "HasMaskedEffect"
