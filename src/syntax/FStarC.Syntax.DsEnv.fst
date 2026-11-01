@@ -793,7 +793,7 @@ let resolve_in_open_namespaces'
 let fv_qual_of_se : sigelt -> ML (option fv_qual) = fun se -> match se.sigel with
     | Sig_datacon {ty_lid=l} ->
       let qopt = BU.find_map se.sigquals (function
-          | RecordConstructor (_, fs) -> Some (Record_ctor(l, fs))
+          | RecordConstructor (_, fs, _) -> Some (Record_ctor(l, fs))
           | _ -> None) in
       begin match qopt with
         | None -> Some Data_ctor
@@ -1155,6 +1155,10 @@ let extract_record (e:env) (new_globs: ref (list scope_mod)) : sigelt -> ML unit
       | RecordType _
       | RecordConstructor _ -> true
       | _ -> false) in
+    let is_codata = BU.for_some (function
+      | RecordType (_, _, c)
+      | RecordConstructor (_, _, c) -> c
+      | _ -> false) in
 
     let find_dc dc =
       sigs |> Option.find (function
@@ -1178,7 +1182,8 @@ let extract_record (e:env) (new_globs: ref (list scope_mod)) : sigelt -> ML unit
                               parms=parms;
                               fields=fields;
                               is_private = List.contains Private typename_quals;
-                              is_record=is_rec} in
+                              is_record=is_rec;
+                              is_codata=is_codata typename_quals} in
                 (* the record is added to the current list of
                 top-level definitions, to allow shadowing field names
                 that were reachable through previous "open"s. *)

@@ -1198,7 +1198,7 @@ let collect_module_or_decls (filename:string) (m:either modul (list decl)) : ML 
         collect_binders binders;
         Option.iter collect_term k;
         collect_term t
-    | TyconRecord (_, binders, k, _, identterms) ->
+    | TyconRecord (_, binders, k, _, identterms, _) ->
         collect_binders binders;
         Option.iter collect_term k;
         collect_tycon_record identterms

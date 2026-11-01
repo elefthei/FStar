@@ -509,6 +509,7 @@ val is_projector           : env -> lident -> ML (bool)
 val is_datacon             : env -> lident -> ML (bool)
 
 val is_record              : env -> lident -> ML (bool)
+val is_codata_record       : env -> lident -> ML (bool)
 
 val qninfo_is_action       : qninfo -> ML (bool)
 

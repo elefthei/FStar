@@ -681,8 +681,9 @@ let set_uvar uv t =
 let qualifier_equal q1 q2 = match q1, q2 with
   | Discriminator l1, Discriminator l2 -> lid_equals l1 l2
   | Projector (l1a, l1b), Projector (l2a, l2b) -> lid_equals l1a l2a && (string_of_id l1b = string_of_id l2b)
-  | RecordType (ns1, f1), RecordType (ns2, f2)
-  | RecordConstructor (ns1, f1), RecordConstructor (ns2, f2) ->
+  | RecordType (ns1, f1, c1), RecordType (ns2, f2, c2)
+  | RecordConstructor (ns1, f1, c1), RecordConstructor (ns2, f2, c2) ->
+      c1 = c2 &&
       List.length ns1 = List.length ns2 && List.forall2 (fun x1 x2 -> (string_of_id x1) = (string_of_id x2)) f1 f2 &&
       List.length f1 = List.length f2 && List.forall2 (fun x1 x2 -> (string_of_id x1) = (string_of_id x2)) f1 f2
   | _ -> q1=q2

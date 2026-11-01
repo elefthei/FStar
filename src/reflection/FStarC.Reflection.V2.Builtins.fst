@@ -488,8 +488,8 @@ let rd_to_syntax_qual : RD.qualifier -> ML qualifier = function
   | RD.Reflectable l -> Reflectable (Ident.lid_of_path l Range.dummyRange)
   | RD.Discriminator l -> Discriminator (Ident.lid_of_path l Range.dummyRange)
   | RD.Projector (l, i) -> Projector (Ident.lid_of_path l Range.dummyRange, i)
-  | RD.RecordType (l1, l2) -> RecordType (l1, l2)
-  | RD.RecordConstructor (l1, l2) -> RecordConstructor (l1, l2)
+  | RD.RecordType (l1, l2) -> RecordType (l1, l2, false)
+  | RD.RecordConstructor (l1, l2) -> RecordConstructor (l1, l2, false)
   | RD.Action l -> Action (Ident.lid_of_path l Range.dummyRange)
   | RD.ExceptionConstructor -> ExceptionConstructor
   | RD.HasMaskedEffect -> HasMaskedEffect
@@ -513,8 +513,8 @@ let syntax_to_rd_qual : S.qualifier -> ML RD.qualifier = function
   | Reflectable l -> RD.Reflectable (Ident.path_of_lid l)
   | Discriminator l -> RD.Discriminator (Ident.path_of_lid l)
   | Projector (l, i) -> RD.Projector (Ident.path_of_lid l, i)
-  | RecordType (l1, l2) -> RD.RecordType (l1, l2)
-  | RecordConstructor (l1, l2) -> RD.RecordConstructor (l1, l2)
+  | RecordType (l1, l2, _) -> RD.RecordType (l1, l2)
+  | RecordConstructor (l1, l2, _) -> RD.RecordConstructor (l1, l2)
   | Action l -> RD.Action (Ident.path_of_lid l)
   | ExceptionConstructor -> RD.ExceptionConstructor
   | HasMaskedEffect -> RD.HasMaskedEffect

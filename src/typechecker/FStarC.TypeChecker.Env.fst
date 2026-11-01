@@ -916,7 +916,7 @@ let datacon_decl env (lid:lident) : ML (option (fv_qual & int & tscheme)) =
   | Some (Inr ({ sigel = Sig_datacon {ty_lid; us; t; num_ty_params}; sigquals }, _), _) ->
     let fvq =
       match BU.find_map sigquals (function
-              | RecordConstructor (_, fs) -> Some (Record_ctor (ty_lid, fs))
+              | RecordConstructor (_, fs, _) -> Some (Record_ctor (ty_lid, fs))
               | _ -> None)
       with
       | Some q -> q
@@ -1287,6 +1287,12 @@ let is_record env lid : ML _ =
   match lookup_qname env lid with
     | Some (Inr ({ sigel = Sig_inductive_typ _; sigquals=quals }, _), _) ->
         BU.for_some (function RecordType _ | RecordConstructor _ -> true | _ -> false) quals
+    | _ -> false
+
+let is_codata_record env lid : ML _ =
+  match lookup_qname env lid with
+    | Some (Inr ({ sigel = Sig_inductive_typ _; sigquals=quals }, _), _) ->
+        BU.for_some (function RecordType (_, _, c) | RecordConstructor (_, _, c) -> c | _ -> false) quals
     | _ -> false
 
 let qninfo_is_action (qninfo : qninfo) : ML _ =

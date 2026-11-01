@@ -132,7 +132,7 @@ let lidents_of_tycon (tc:tycon) : ML _ =
   match tc with
   | TyconAbstract (_, bs, k) -> concat_map lidents_of_binder bs @ opt_map lidents_of_term k
   | TyconAbbrev (_, bs, k, t) -> concat_map lidents_of_binder bs @ opt_map lidents_of_term k @ lidents_of_term t
-  | TyconRecord (_, bs, k, _, tcs) ->
+  | TyconRecord (_, bs, k, _, tcs, _) ->
     concat_map lidents_of_binder bs @
     opt_map lidents_of_term k @
     concat_map lidents_of_tycon_record tcs

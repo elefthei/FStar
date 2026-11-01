@@ -2976,7 +2976,8 @@ let try_lookup_record_type env (typename:lident)
                     parms;
                     fields = fields;
                     is_private = false;
-                    is_record = is_rec
+                    is_record = is_rec;
+                    is_codata = Env.is_codata_record env typename
                   }
                 in
                 Some r

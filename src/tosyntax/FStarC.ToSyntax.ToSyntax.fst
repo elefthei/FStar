@@ -2738,7 +2738,7 @@ let rec desugar_tycon env (d: AST.decl) (d_attrs_initial:list S.term) quals tcs 
   let tycon_id = function
     | TyconAbstract(id, _, _)
     | TyconAbbrev(id, _, _, _)
-    | TyconRecord(id, _, _, _, _)
+    | TyconRecord(id, _, _, _, _, _)
     | TyconVariant(id, _, _, _) -> id in
   let binder_to_term b = match b.b with
     | Annotated (x, _)
@@ -2762,7 +2762,7 @@ let rec desugar_tycon env (d: AST.decl) (d_attrs_initial:list S.term) quals tcs 
                     let cid_as_constant = EMB.embed (string_of_lid (qualify env cid)) range None EMB.id_norm_cb in
                     S.mk_Tm_app desugar_attr [(cid_as_constant, None)] range
                   in
-                  (TyconRecord (record_id, bds, None, attrs, r), desugar_marker::d_attrs_initial) |> Some
+                  (TyconRecord (record_id, bds, None, attrs, r, false), desugar_marker::d_attrs_initial) |> Some
                 , (cid, Some ( match k with
                              | None   -> VpOfNotation payload_typ
                              | Some k -> 
@@ -2790,7 +2790,7 @@ let rec desugar_tycon env (d: AST.decl) (d_attrs_initial:list S.term) quals tcs 
     List.fold_left (fun out b -> mk_term (App(out, binder_to_term b, imp_of_aqual b)) out.range out.level)
       t binders in
   let tycon_record_as_variant = function
-    | TyconRecord(id, parms, kopt, attrs, fields) ->
+    | TyconRecord(id, parms, kopt, attrs, fields, is_codata) ->
       let constrName = mk_ident("Mk" ^ (string_of_id id), (range_of_id id)) in
       let mfields = List.map (fun (x,q,attrs,t) -> FStarC.Parser.AST.mk_binder_with_attrs (Annotated(x,t)) (range_of_id x) Expr q attrs) fields in
       let result = apply_binders (mk_term (Var (lid_of_ids [id])) (range_of_id id) Type_level) parms in
@@ -2804,7 +2804,7 @@ let rec desugar_tycon env (d: AST.decl) (d_attrs_initial:list S.term) quals tcs 
                 (Format.fmt1 "Field %s shadows the record's name or a parameter of it, please rename it" (string_of_id f)))
           fields;
 
-      TyconVariant(id, parms, kopt, [(constrName, Some (VpArbitrary constrTyp), attrs)]), fields |> List.map (fun (f, _, _, _) -> f)
+      TyconVariant(id, parms, kopt, [(constrName, Some (VpArbitrary constrTyp), attrs)]), fields |> List.map (fun (f, _, _, _) -> f), is_codata
     | _ -> failwith "impossible" in
   let desugar_abstract_tc quals _env mutuals d_attrs = function
     | TyconAbstract(id, binders, kopt) ->
@@ -2950,8 +2950,8 @@ let rec desugar_tycon env (d: AST.decl) (d_attrs_initial:list S.term) quals tcs 
 
     | [(TyconRecord payload, d_attrs)] ->
       let trec = TyconRecord payload in
-      let t, fs = tycon_record_as_variant trec in
-      desugar_tycon env d d_attrs (RecordType (ids_of_lid (current_module env), fs)::quals) [t]
+      let t, fs, is_codata = tycon_record_as_variant trec in
+      desugar_tycon env d d_attrs (RecordType (ids_of_lid (current_module env), fs, is_codata)::quals) [t]
 
     |  _::_ ->
       let env0 = env in
@@ -2962,8 +2962,8 @@ let rec desugar_tycon env (d: AST.decl) (d_attrs_initial:list S.term) quals tcs 
         match tc with
           | TyconRecord _ ->
             let trec = tc in
-            let t, fs = tycon_record_as_variant trec in
-            collect_tcs (RecordType (ids_of_lid (current_module env), fs)::quals) (env, tcs) (t, d_attrs)
+            let t, fs, is_codata = tycon_record_as_variant trec in
+            collect_tcs (RecordType (ids_of_lid (current_module env), fs, is_codata)::quals) (env, tcs) (t, d_attrs)
           | TyconVariant(id, binders, kopt, constructors) ->
             let env, _, se, tconstr = desugar_abstract_tc quals env mutuals d_attrs (TyconAbstract(id, binders, kopt)) in
             env, (Inl(se, constructors, tconstr, quals), d_attrs)::tcs
