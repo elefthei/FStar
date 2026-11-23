@@ -8,10 +8,8 @@ description: |
   branch.
 on:
   workflow_run:
-    workflows: ["CI", "Nightly CI"]
+    workflows: ["CI"]
     types: [completed]
-    # Same as ci.yml's push filter: diagnose failures on every branch
-    # (default branch and PR branches), except scratch `_*` branches.
     branches-ignore:
       - "_**"
 # Only failed runs, and only for branches of this repository (not forks).
@@ -124,7 +122,7 @@ Prefer the smallest recommendation supported by the evidence.
   comment on that pull request (set the comment's `item_number` to the PR
   number) with the diagnosis. End with: "Comment `/pr-fix` to have the PR Fix
   agent attempt a fix."
-- **Other runs** (default branch, nightly, ...):
+- **Runs without an associated open pull request**:
   - If an open issue already reports the same root cause, add one comment to it
     with the new run link, evidence, and any materially new findings.
   - Otherwise create one issue with this structure:

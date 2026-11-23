@@ -5,7 +5,6 @@ description: Labels new issues (type + F* component), spots duplicates, and sugg
 on:
   issues:
     types: [opened, reopened]
-  schedule: "daily around 14:00 on weekdays"
   workflow_dispatch:
   reaction: eyes
 concurrency:
@@ -65,7 +64,7 @@ programming language: its compiler/typechecker (`src/`), standard library
 
 - If this run was triggered by an `issues` event, triage only issue
   #${{ github.event.issue.number }}.
-- Otherwise (schedule / manual), list open issues that have **no labels**
+- For a manual run, list open issues that have **no labels**
   (at most 10, newest first) and triage each of them.
 
 Skip issues that already have a type label (`bug`, `enhancement`,

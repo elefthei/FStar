@@ -6,8 +6,8 @@ entirely from GitHub comments, without an editor.
 
 Most workflows are adapted from [`github/gh-aw`](https://github.com/github/gh-aw/tree/main/.github/workflows)
 (Scout, Q, PR Code Quality Reviewer, Issue Triage, Plan, Mergefest, Archie,
-Craft, Sub-Issue Closer). CI Doctor, PR Fix, Ask and Weekly Repo Status are
-adapted from [`githubnext/agentics`](https://github.com/githubnext/agentics).
+Craft). CI Doctor, PR Fix, and Ask are adapted from
+[`githubnext/agentics`](https://github.com/githubnext/agentics).
 
 Each workflow is a markdown file in `.github/workflows/<name>.md` (the source
 you edit) compiled to `.github/workflows/<name>.lock.yml` (what GitHub Actions
@@ -51,16 +51,14 @@ Comment `/help` on any issue or PR to list all available commands.
 | [Scout](workflows/scout.md) | `/scout` on an issue, `scout` label, or manual dispatch | Researches the issue, implements a fix with a regression test, builds/tests F*, opens a PR, comments on the issue | Claude Opus 5.5 |
 | [PR Code Quality Reviewer](workflows/pr-review.md) | PR opened / reopened / ready for review; pushes to `scout`/`automation` PRs; `/review` | Critical review incl. F*-specific soundness checks (`admit`, `assume`, rlimits, `.fsti` drift, `stage0`), inline comments + summary | Claude Opus 5.5 |
 | [PR Fix](workflows/pr-fix.md) | `/pr-fix [instructions]` on a PR | Addresses review comments and failing CI, builds/tests, pushes to the PR branch | Claude Opus 5.5 |
-| [CI Doctor](workflows/ci-doctor.md) | `CI` / `Nightly CI` run fails | Root-causes the failure from logs; comments on the PR, or opens/updates a `[CI failure]` issue | Copilot default |
-| [Issue Triage](workflows/issue-triage.md) | issue opened/reopened, weekdays, manual | Adds a type label and `area/*` labels, finds duplicates, suggests `/scout` or `/plan` | Copilot default |
+| [CI Doctor](workflows/ci-doctor.md) | `CI` run fails (not `Nightly CI`) | Root-causes the failure from logs; comments on the PR, or opens/updates a `[CI failure]` issue | Copilot default |
+| [Issue Triage](workflows/issue-triage.md) | issue opened/reopened, manual | Adds a type label and `area/*` labels, finds duplicates, suggests `/scout` or `/plan` | Copilot default |
 | [Plan](workflows/plan.md) | `/plan` on an issue | Breaks the issue into ≤5 small sub-issues ready for `/scout` | Copilot default |
 | [Ask](workflows/ask.md) | `/ask <question>` on an issue or PR | Answers questions about the codebase with sources | Copilot default |
 | [Mergefest](workflows/mergefest.md) | `/mergefest` on a PR | Merges the base branch into the PR branch and resolves conflicts | Copilot default |
 | [Archie](workflows/archie.md) | `/archie` on an issue or PR | Mermaid diagrams of the issue/PR relationships or code structure | Copilot default |
 | [Q](workflows/q.md) | `/q` | Investigates agentic workflow runs (logs, audits) and opens PRs that improve the workflows | Copilot default |
 | [Craft](workflows/craft.md) | `/craft <description>` on an issue | Writes a new agentic workflow and opens a PR | Copilot default |
-| [Sub-Issue Closer](workflows/sub-issue-closer.md) | daily, manual | Closes parent issues whose sub-issues are all done | Copilot default |
-| [Weekly Repo Status](workflows/repo-status.md) | Mondays, manual | Status report issue: activity, CI health, agent PRs needing attention | Copilot default |
 
 Generated support workflows (do not edit by hand):
 `agentic_commands.yml` routes all slash commands (and `/help`) to the
