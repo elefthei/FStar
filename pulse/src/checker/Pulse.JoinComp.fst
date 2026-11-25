@@ -147,7 +147,7 @@ let rec record_witness_fields (g:env) (ty:typ) : T.Tac (option (list string)) =
        | Some se ->
          let rec fields (qs:list R.qualifier) : option (list string) =
            match qs with
-           | R.RecordType (_, fs)::_ -> Some (List.Tot.map (fun f -> fst (R.inspect_ident f)) fs)
+           | R.RecordType (_, fs, _)::_ -> Some (List.Tot.map (fun f -> fst (R.inspect_ident f)) fs)
            | _::qs -> fields qs
            | [] -> None
          in
