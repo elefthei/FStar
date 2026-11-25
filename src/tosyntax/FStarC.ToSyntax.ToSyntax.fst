@@ -2949,6 +2949,7 @@ let rec desugar_tycon env (d: AST.decl) (d_attrs_initial:list S.term) quals tcs 
     | [(TyconRecord payload, d_attrs)] ->
       let trec = TyconRecord payload in
       let t, fs, is_codata = tycon_record_as_variant trec in
+      let is_codata = is_codata || U.has_attribute d_attrs C.coinductive_attr in
       desugar_tycon env d d_attrs (RecordType (ids_of_lid (current_module env), fs, is_codata)::quals) [t]
 
     |  _::_ ->
@@ -2961,6 +2962,7 @@ let rec desugar_tycon env (d: AST.decl) (d_attrs_initial:list S.term) quals tcs 
           | TyconRecord _ ->
             let trec = tc in
             let t, fs, is_codata = tycon_record_as_variant trec in
+            let is_codata = is_codata || U.has_attribute d_attrs C.coinductive_attr in
             collect_tcs (RecordType (ids_of_lid (current_module env), fs, is_codata)::quals) (env, tcs) (t, d_attrs)
           | TyconVariant(id, binders, kopt, constructors) ->
             let env, _, se, tconstr = desugar_abstract_tc quals env mutuals d_attrs (TyconAbstract(id, binders, kopt)) in

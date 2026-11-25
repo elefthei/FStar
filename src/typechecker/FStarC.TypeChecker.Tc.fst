@@ -139,6 +139,26 @@ let tc_inductive' env ses quals attrs lids =
         Format.print1 ">>>>>>>>>>>>>>tc_inductive %s\n" (show ses);
 
     let ses = List.map (tc_decl_attributes env) ses in
+    let has_coinductive_attr se =
+      U.has_attribute attrs PC.coinductive_attr ||
+      U.has_attribute se.sigattrs PC.coinductive_attr ||
+      BU.for_some (function RecordType (_, _, true) -> true | _ -> false) se.sigquals
+    in
+    List.iter (fun se ->
+      match se.sigel with
+      | Sig_inductive_typ _ when has_coinductive_attr se ->
+        if not (se.sigquals |> BU.for_some (function RecordType _ -> true | _ -> false))
+        then
+          raise_error se Errors.Fatal_InvalidCoinductiveAttribute [
+            text "The [@@coinductive] attribute can only be used on record types.";
+          ];
+        if (quals @ se.sigquals) |> BU.for_some (function Noeq | Unopteq -> true | _ -> false)
+        then
+          raise_error se Errors.Fatal_InvalidCoinductiveAttribute [
+            text "The [@@coinductive] attribute cannot be combined with noeq or unopteq.";
+          ]
+      | _ -> ()
+    ) ses;
 
     let sig_bndle, tcs, datas = TcInductive.check_inductive_well_typedness env ses quals lids in
     (* we have a well-typed inductive;
@@ -406,6 +426,16 @@ let tc_decl' env0 se: ML (list sigelt & list sigelt & Env.env) =
          | Sig_fail _ -> se
          | _ -> tc_decl_attributes env se
   in
+  (* Projectors and discriminators of a [@@coinductive] record inherit its
+     attributes, and Sig_fail wraps declarations that are checked later. *)
+  if U.has_attribute se.sigattrs PC.coinductive_attr &&
+     not (Sig_bundle? se.sigel) &&
+     not (Sig_fail? se.sigel) &&
+     not (se.sigquals |> BU.for_some (function Projector _ | Discriminator _ -> true | _ -> false))
+  then
+    raise_error se Errors.Fatal_InvalidCoinductiveAttribute [
+      text "The [@@coinductive] attribute can only be used on record types.";
+    ];
   Quals.check_sigelt_quals_pre env se;
   proc_check_with se.sigattrs (fun () ->
   let r = se.sigrng in

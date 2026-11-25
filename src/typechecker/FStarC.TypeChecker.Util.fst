@@ -2601,7 +2601,7 @@ let try_lookup_record_type env (typename:lident)
                     fields = fields;
                     is_private = false;
                     is_record = is_rec;
-                    is_codata = Env.is_codata_record env typename
+                    is_codata = is_rec && Env.is_codata_record env typename
                   }
                 in
                 Some r
