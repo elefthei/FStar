@@ -11,6 +11,23 @@ Guidelines for the changelog:
   possibly with details in the PR or links to sample fixes (for example, changes
   to F*'s test suite).
 
+## Coinductive records
+
+  * New attribute `FStar.Attributes.coinductive`. Writing `[@@coinductive]` on
+    a record type sets an `is_codata` flag on the record's `RecordType` and
+    `RecordConstructor` qualifiers. For now this is only a marker: such
+    records behave like ordinary records. Using the attribute on anything
+    other than a record, or together with `noeq`/`unopteq`, is error 401.
+
+  * **Breaking (reflection):** `FStar.Stubs.Reflection.V2.Data.RecordType`
+    now has a third field, `bool`, that is `true` for a `[@@coinductive]`
+    record. Update patterns `RecordType (ns, fs)` to `RecordType (ns, fs, _)`
+    and constructions to `RecordType (ns, fs, false)`. `RecordConstructor`
+    keeps its two fields.
+
+  * The `.checked` file version is bumped to 104, so existing checked files
+    must be rebuilt.
+
 ## SMT solver
 
   * The default Z3 version is now 5.3.0. Binary packages include this
