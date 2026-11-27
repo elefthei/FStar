@@ -71,6 +71,7 @@ let keywords : M.t (token_kind & string) =
   M.of_list [
     "noeq", kw NOEQUALITY;
     "unopteq", kw UNOPTEQUALITY;
+    "codata", kw CODATA;
     "and", kw AND;
     "assert", kw ASSERT;
     "assume", kw ASSUME;

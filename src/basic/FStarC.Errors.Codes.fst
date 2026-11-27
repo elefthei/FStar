@@ -416,4 +416,5 @@ let default_settings : list error_setting =
     Error_CustardBadIfDef                              , CAlwaysError, 398;
     Error_CustardTypeVarInstantiation                  , CAlwaysError, 399;
     Warning_TypeclassResolutionBudget                  , CWarning, 400;
+    Fatal_InvalidCodataQualifier                       , CFatal, 401;
     ]

@@ -11,6 +11,29 @@ Guidelines for the changelog:
   possibly with details in the PR or links to sample fixes (for example, changes
   to F*'s test suite).
 
+## Coinductive records
+
+  * New declaration qualifier `codata`, used like `noeq`:
+    `codata type stream_cell (a:Type) = { hd : a; tl : nat }`. It sets an
+    `is_codata` flag on the record's `RecordType` and `RecordConstructor`
+    qualifiers. In a mutually recursive block, every type must be a record,
+    and all of them are flagged. For now this is only a marker: such records
+    behave like ordinary records. Using `codata` on anything other than a
+    record type definition (variants, classes, `let`, `val`, ...), or together
+    with `noeq`/`unopteq`, is error 401.
+
+  * **Breaking:** `codata` is now a reserved keyword. Rename any identifier
+    called `codata`.
+
+  * **Breaking (reflection):** `FStar.Stubs.Reflection.V2.Data.RecordType`
+    and `RecordConstructor` now have a third field, `bool`, that is `true`
+    for a `codata` record. Update patterns `RecordType (ns, fs)` to
+    `RecordType (ns, fs, _)` and constructions to `RecordType (ns, fs, false)`,
+    and likewise for `RecordConstructor`.
+
+  * The `.checked` file version is bumped to 104, so existing checked files
+    must be rebuilt.
+
 ## SMT solver
 
   * The default Z3 version is now 5.3.0. Binary packages include this

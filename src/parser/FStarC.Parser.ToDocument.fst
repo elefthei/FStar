@@ -881,7 +881,7 @@ and p_typeDecl pre : _ -> ML _ = function
   | TyconAbbrev (lid, bs, typ_opt, t) ->
     let comm, doc = p_typ_sep false false t in
     comm, p_typeDeclPrefix pre true lid bs typ_opt, doc, jump2
-  | TyconRecord (lid, bs, typ_opt, attrs, record_field_decls) ->
+  | TyconRecord (lid, bs, typ_opt, attrs, record_field_decls, _) ->
       empty
     , p_typeDeclPrefix pre true lid bs typ_opt
     , p_attributes false attrs ^^ p_typeDeclRecord record_field_decls
@@ -1045,6 +1045,7 @@ and p_qualifier : _ -> ML _ = function
   | Private -> str "private"
   | Noeq -> str "noeq"
   | Unopteq -> str "unopteq"
+  | Codata -> str "codata"
   | Assumption -> str "assume"
   | TotalEffect -> str "total"
   | Effect_qual -> empty

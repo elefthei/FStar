@@ -339,7 +339,7 @@ let pragma_start_kinds : list token_kind = [
 let qualifier_kinds : list token_kind = [
   ASSUME; INLINE; UNFOLDABLE; INLINE_FOR_EXTRACTION; UNFOLD;
   IRREDUCIBLE; NOEXTRACT; TOTAL; PRIVATE; NOEQUALITY;
-  UNOPTEQUALITY; NEW; LOGIC; OPAQUE; REIFIABLE; REFLECTABLE;
+  UNOPTEQUALITY; CODATA; NEW; LOGIC; OPAQUE; REIFIABLE; REFLECTABLE;
 ]
 
 let start_of_next_decl_kinds : list token_kind =
@@ -2042,6 +2042,7 @@ let p_qualifier (ps:pstate) : ML qualifier =
     | PRIVATE -> Private
     | NOEQUALITY -> Noeq
     | UNOPTEQUALITY -> Unopteq
+    | CODATA -> Codata
     | NEW -> New
     | LOGIC -> Logic
     | OPAQUE -> Opaque
@@ -2137,7 +2138,7 @@ let typeDecl (ps:pstate) : ML tycon =
       match record with
       | Some (attrs, fs) ->
         check_id lid;
-        TyconRecord (lid, tparams, kopt, attrs, fs)
+        TyconRecord (lid, tparams, kopt, attrs, fs, false)
       | None ->
         if FStar.List.Tot.mem k start_of_next_decl_kinds || k = AND then begin
           check_id lid;

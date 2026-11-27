@@ -877,10 +877,14 @@ let qual_eq (q1 q2:R.qualifier) : bool =
   | Action n1, Action n2 -> n1 = n2 
   | Projector (n1, i1), Projector (n2, i2) ->
     n1 = n2 && eq_ident i1 i2
-  | RecordType (ids1, ids1'), RecordType (ids2, ids2')
-  | RecordConstructor (ids1, ids1'), RecordConstructor (ids2, ids2') ->
+  | RecordType (ids1, ids1', c1), RecordType (ids2, ids2', c2) ->
     eq_list eq_ident ids1 ids2 &&
-    eq_list eq_ident ids1' ids2'
+    eq_list eq_ident ids1' ids2' &&
+    c1 = c2
+  | RecordConstructor (ids1, ids1', c1), RecordConstructor (ids2, ids2', c2) ->
+    eq_list eq_ident ids1 ids2 &&
+    eq_list eq_ident ids1' ids2' &&
+    c1 = c2
   | ExceptionConstructor, ExceptionConstructor
   | HasMaskedEffect, HasMaskedEffect
   | Effect, Effect

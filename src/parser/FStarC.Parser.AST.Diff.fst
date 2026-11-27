@@ -417,7 +417,8 @@ let eq_tycon (t1 t2: tycon) : ML bool =
     eq_list eq_binder bs1 bs2 &&
     eq_option eq_term k1 k2 &&
     eq_term t1 t2
-  | TyconRecord (i1, bs1, k1, a1, r1), TyconRecord (i2, bs2, k2, a2, r2) ->
+  | TyconRecord (i1, bs1, k1, a1, r1, c1), TyconRecord (i2, bs2, k2, a2, r2, c2) ->
+    c1 = c2 &&
     eq_ident i1 i2 &&
     eq_list eq_binder bs1 bs2 &&
     eq_option eq_term k1 k2 &&
@@ -459,6 +460,7 @@ let eq_qualifier (t1 t2: qualifier) : ML bool =
   | Private, Private -> true
   | Noeq, Noeq -> true
   | Unopteq, Unopteq -> true
+  | Codata, Codata -> true
   | Assumption, Assumption -> true
   | TotalEffect, TotalEffect -> true
   | Effect_qual, Effect_qual -> true
