@@ -188,6 +188,7 @@ type qualifier =
   | Private
   | Noeq
   | Unopteq
+  | Codata                                 //a coinductive record type; see TyconRecord's is_codata flag
   | Assumption
   | TotalEffect
   | Effect_qual

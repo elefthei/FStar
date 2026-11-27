@@ -817,8 +817,8 @@ let e_qualifier =
             S.mk_Tm_app ref_qual_RecordType.t [S.as_arg (embed rng (ids1, ids2, is_codata))]
                         Range.dummyRange
 
-        | RD.RecordConstructor (ids1, ids2) ->
-            S.mk_Tm_app ref_qual_RecordConstructor.t [S.as_arg (embed rng (ids1, ids2))]
+        | RD.RecordConstructor (ids1, ids2, is_codata) ->
+            S.mk_Tm_app ref_qual_RecordConstructor.t [S.as_arg (embed rng (ids1, ids2, is_codata))]
                         Range.dummyRange
 
         in { r with pos = rng }
@@ -855,7 +855,7 @@ let e_qualifier =
         | _ when S.fv_eq_lid fv ref_qual_RecordType.lid ->
             run args (RD.RecordType <$$> e_tuple3 (e_list e_ident) (e_list e_ident) e_bool)
         | _ when S.fv_eq_lid fv ref_qual_RecordConstructor.lid ->
-            run args (RD.RecordConstructor <$$> e_tuple2 (e_list e_ident) (e_list e_ident))
+            run args (RD.RecordConstructor <$$> e_tuple3 (e_list e_ident) (e_list e_ident) e_bool)
         | _ -> None
     in
     mk_emb embed unembed fstar_refl_qualifier_fv

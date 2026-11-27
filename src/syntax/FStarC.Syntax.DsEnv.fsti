@@ -35,7 +35,7 @@ type record_or_dc = {
   fields: list (ident & bool & typ); (* bool: is it implicit or meta? *)
   is_private: bool;
   is_record:bool;
-  is_codata:bool (* true for coinductive (codata) records, i.e. those marked [@@coinductive] *)
+  is_codata:bool (* true for coinductive (codata) records, i.e. those declared with the codata qualifier *)
 }
 
 val env : Type0

@@ -1045,6 +1045,7 @@ and p_qualifier : _ -> ML _ = function
   | Private -> str "private"
   | Noeq -> str "noeq"
   | Unopteq -> str "unopteq"
+  | Codata -> str "codata"
   | Assumption -> str "assume"
   | TotalEffect -> str "total"
   | Effect_qual -> empty

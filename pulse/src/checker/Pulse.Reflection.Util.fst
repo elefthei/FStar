@@ -881,9 +881,10 @@ let qual_eq (q1 q2:R.qualifier) : bool =
     eq_list eq_ident ids1 ids2 &&
     eq_list eq_ident ids1' ids2' &&
     c1 = c2
-  | RecordConstructor (ids1, ids1'), RecordConstructor (ids2, ids2') ->
+  | RecordConstructor (ids1, ids1', c1), RecordConstructor (ids2, ids2', c2) ->
     eq_list eq_ident ids1 ids2 &&
-    eq_list eq_ident ids1' ids2'
+    eq_list eq_ident ids1' ids2' &&
+    c1 = c2
   | ExceptionConstructor, ExceptionConstructor
   | HasMaskedEffect, HasMaskedEffect
   | Effect, Effect

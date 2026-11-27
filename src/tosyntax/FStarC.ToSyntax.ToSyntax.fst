@@ -167,6 +167,9 @@ let trans_qual (r:Range.t) maybe_effect_id (_x_:AST.qualifier) : ML _ = match _x
   | AST.Reifiable ->     S.Reifiable
   | AST.Noeq ->          S.Noeq
   | AST.Unopteq ->       S.Unopteq
+  | AST.Codata ->
+    raise_error r Errors.Fatal_InvalidCodataQualifier
+      "The 'codata' qualifier can only be used on record type definitions"
   | AST.Inline
   | AST.Visible ->
     raise_error r Errors.Fatal_UnsupportedQualifier "Unsupported qualifier"
@@ -2949,7 +2952,6 @@ let rec desugar_tycon env (d: AST.decl) (d_attrs_initial:list S.term) quals tcs 
     | [(TyconRecord payload, d_attrs)] ->
       let trec = TyconRecord payload in
       let t, fs, is_codata = tycon_record_as_variant trec in
-      let is_codata = is_codata || U.has_attribute d_attrs C.coinductive_attr in
       desugar_tycon env d d_attrs (RecordType (ids_of_lid (current_module env), fs, is_codata)::quals) [t]
 
     |  _::_ ->
@@ -2962,7 +2964,6 @@ let rec desugar_tycon env (d: AST.decl) (d_attrs_initial:list S.term) quals tcs 
           | TyconRecord _ ->
             let trec = tc in
             let t, fs, is_codata = tycon_record_as_variant trec in
-            let is_codata = is_codata || U.has_attribute d_attrs C.coinductive_attr in
             collect_tcs (RecordType (ids_of_lid (current_module env), fs, is_codata)::quals) (env, tcs) (t, d_attrs)
           | TyconVariant(id, binders, kopt, constructors) ->
             let env, _, se, tconstr = desugar_abstract_tc quals env mutuals d_attrs (TyconAbstract(id, binders, kopt)) in
@@ -3448,6 +3449,23 @@ and desugar_decl_core env (d_attrs:list S.term) (d:decl) : ML (env_t & sigelts) 
             | [(TyconRecord _)] -> Noeq :: quals
             | _ -> raise_error d Errors.Error_BadClassDecl "Ill-formed `class` declaration: definition must be a record type"
         else quals
+    in
+    let is_codata = quals |> BU.for_some (function Codata -> true | _ -> false) in
+    let quals = quals |> List.filter (function Codata -> false | _ -> true) in
+    let tcs =
+      if not is_codata then tcs else begin
+        if typeclass then
+          raise_error d Errors.Fatal_InvalidCodataQualifier
+            "The 'codata' qualifier cannot be used on a class";
+        if quals |> BU.for_some (function Noeq | Unopteq -> true | _ -> false) then
+          raise_error d Errors.Fatal_InvalidCodataQualifier
+            "The 'codata' qualifier cannot be combined with 'noeq' or 'unopteq'";
+        tcs |> List.map (function
+          | TyconRecord (id, bs, k, attrs, fields, _) -> TyconRecord (id, bs, k, attrs, fields, true)
+          | _ ->
+            raise_error d Errors.Fatal_InvalidCodataQualifier
+              "The 'codata' qualifier can only be used on record type definitions")
+      end
     in
     let env, ses = desugar_tycon env d d_attrs (List.map (trans_qual None) quals) tcs in
     if !dbg_attrs

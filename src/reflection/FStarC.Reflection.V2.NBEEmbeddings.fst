@@ -1012,8 +1012,8 @@ let e_qualifier =
         | RD.RecordType ids123 ->
             mkConstruct ref_qual_RecordType.fv [] [as_arg (embed (e_tuple3 (e_list e_ident) (e_list e_ident) e_bool) cb ids123)]
 
-        | RD.RecordConstructor ids12 ->
-            mkConstruct ref_qual_RecordConstructor.fv [] [as_arg (embed (e_tuple2 (e_list e_ident) (e_list e_ident)) cb ids12)]
+        | RD.RecordConstructor ids123 ->
+            mkConstruct ref_qual_RecordConstructor.fv [] [as_arg (embed (e_tuple3 (e_list e_ident) (e_list e_ident) e_bool) cb ids123)]
     in
     let unembed cb (t:t) : ML (option RD.qualifier) =
         match t.nbe_t with
@@ -1056,8 +1056,8 @@ let e_qualifier =
             Some (RD.RecordType ids123))
 
         | Construct (fv, [], [(ids12, _)]) when S.fv_eq_lid fv ref_qual_RecordConstructor.lid ->
-            Option.bind (unembed (e_tuple2 (e_list e_ident) (e_list e_ident)) cb ids12) (fun ids12 ->
-            Some (RD.RecordConstructor ids12))
+            Option.bind (unembed (e_tuple3 (e_list e_ident) (e_list e_ident) e_bool) cb ids12) (fun ids123 ->
+            Some (RD.RecordConstructor ids123))
 
         | _ ->
             Err.log_issue0 Err.Warning_NotEmbedded (Format.fmt1 "Not an embedded qualifier: %s" (t_to_string t));

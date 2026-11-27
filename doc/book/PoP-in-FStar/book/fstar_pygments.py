@@ -5,6 +5,7 @@ fstar_keywords = (
     'attributes' ,
     'noeq'       ,
     'unopteq'    ,
+    'codata'     ,
     'and'        ,
     'assert'     ,
     'assert_norm' ,        

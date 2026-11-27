@@ -460,6 +460,7 @@ let eq_qualifier (t1 t2: qualifier) : ML bool =
   | Private, Private -> true
   | Noeq, Noeq -> true
   | Unopteq, Unopteq -> true
+  | Codata, Codata -> true
   | Assumption, Assumption -> true
   | TotalEffect, TotalEffect -> true
   | Effect_qual, Effect_qual -> true
