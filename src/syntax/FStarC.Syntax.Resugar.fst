@@ -1474,7 +1474,8 @@ let resugar_typ env datacon_ses se : ML (sigelts & A.tycon) =
                 (bv_as_unique_ident b.binder_bv, q, b.binder_attrs |> List.map (resugar_term' env), resugar_term' env b.binder_bv.sort)
               )
             in
-            A.TyconRecord (ident_of_lid tylid, bs, None, map (resugar_term' env) se.sigattrs, fields)
+            let is_codata = se.sigquals |> BU.for_some (function RecordType (_, _, c) -> c | _ -> false) in
+            A.TyconRecord (ident_of_lid tylid, bs, None, map (resugar_term' env) se.sigattrs, fields, is_codata)
           | _ -> failwith "ggg1"
         else
           (* Resugar as a variant *)

@@ -75,8 +75,8 @@ let cmp_qualifier (q1 q2 : qualifier) : ML FStarC.Order.order =
   | Visible_default, Visible_default -> Eq
   | Discriminator l1, Discriminator l2 -> cmp l1 l2
   | Projector (l1, i1), Projector (l2, i2) -> cmp (l1, i1) (l2, i2)
-  | RecordType (l1, i1), RecordType (l2, i2) -> cmp (l1, i1) (l2, i2)
-  | RecordConstructor (l1, i1), RecordConstructor (l2, i2) -> cmp (l1, i1) (l2, i2)
+  | RecordType (l1, i1, c1), RecordType (l2, i2, c2) -> cmp (l1, i1, c1) (l2, i2, c2)
+  | RecordConstructor (l1, i1, c1), RecordConstructor (l2, i2, c2) -> cmp (l1, i1, c1) (l2, i2, c2)
   | Action l1, Action l2 -> cmp l1 l2
   | ExceptionConstructor, ExceptionConstructor -> Eq
   | HasMaskedEffect, HasMaskedEffect -> Eq

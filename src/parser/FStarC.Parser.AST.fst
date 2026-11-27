@@ -851,7 +851,7 @@ let lids_of_let defs : ML (list lident) =  defs |> List.collect (fun (p, _) -> h
 let id_of_tycon = function
   | TyconAbstract(i, _, _)
   | TyconAbbrev(i, _, _, _)
-  | TyconRecord(i, _, _, _, _)
+  | TyconRecord(i, _, _, _, _, _)
   | TyconVariant(i, _, _, _) -> (string_of_id i)
 
 let string_of_pragma (p:pragma) : ML string = match p with
@@ -1233,10 +1233,10 @@ let pp_tycon (tc : tycon) : ML document =
     ctor "TyconAbstract" [pp i; pp bs; pp knd]
   | TyconAbbrev (i, bs, knd, t) ->
     ctor "TyconAbbrev" [pp i; pp bs; pp knd; doc_of_string "_"]
-  | TyconRecord (i, bs, knd, attrs, fields) ->
+  | TyconRecord (i, bs, knd, attrs, fields, is_codata) ->
     let pp_field (id, q, attrs, tm) =
       ctor "Field" [pp id; pp q; pp attrs; pp_term tm] in
-    ctor "TyconRecord" [pp i; pp bs; pp knd; pp attrs; pp_list' pp_field fields]
+    ctor "TyconRecord" [pp i; pp bs; pp knd; pp attrs; pp_list' pp_field fields; pp is_codata]
   | TyconVariant (i, bs, knd, ctors) ->
     let pp_ctor (id, payload, attrs) =
       ctor "Constructor" [pp id; pp payload; pp attrs] in
